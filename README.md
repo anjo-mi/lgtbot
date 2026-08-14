@@ -162,6 +162,9 @@ All commands are under the `/lgt` prefix with the following structure:
     ├── subscribe <username>   # Subscribe to Twitch channel
     ├── unsubscribe <username> # Unsubscribe from channel
     └── list                   # List all subscriptions
+└── symbols (mod only)
+    ├── import-from <server-id> # Imports emojis from other server
+    ├── remove <emoji>          # Remove an emoji from server
 ```
 
 ## License
