@@ -37,6 +37,17 @@ A Discord bot for the Let's Get Technical community that provides community enga
 
 - Custom reply system for specific users in the watercooler channel
 
+### 5. Emoji Transfers
+
+- Manages server emojis (import from another server, remove from your own server)
+- Requires:
+  - Moderator Permissions for the target server (server receiving emojis)
+  - Manage Expressions Permission for the bot in the target server
+  - Bot membership in the source server (server supplying emojis)
+- Features:
+  - `/lgt symbols import-from <server-id>`: Import all custom emojis from <server-id>
+  - `/lgt symbols remove <emoji>`: Remove <emoji> from server
+
 ## Technical Stack
 
 - **Runtime**: [Bun](https://bun.sh)
