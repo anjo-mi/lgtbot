@@ -23,6 +23,7 @@ import {
 } from './kudos';
 import { handleCommand as handleTwitchCommand } from './twitch';
 import { handleGoalsCommand, handleGoalInteraction } from './goals';
+import { handleEmojiCommand, handleEmojiAutocomplete } from './emoji';
 import { registerAcronymListeners } from './acronyms';
 import { registerHaikuListeners } from './haiku';
 
@@ -76,6 +77,25 @@ client.on('interactionCreate', (interaction) =>
         return;
       }
 
+      if (group === 'symbols') {
+        const userIsModerator = interaction.memberPermissions?.has(
+          PermissionFlagsBits.ModerateMembers
+        );
+        const botCanManageEmojis =
+          interaction.guild?.members.me?.permissions.has(
+            PermissionFlagsBits.ManageGuildExpressions
+          );
+        if (!userIsModerator || !botCanManageEmojis) {
+          await interaction.reply({
+            content: !userIsModerator
+              ? 'You need moderator permissions to use this command.'
+              : 'I need the Manage Expressions permission in this server to manage symbols.',
+            ephemeral: true,
+          });
+          return;
+        }
+      }
+
       switch (group) {
         case 'kudos':
           await handleKudosCommand(interaction);
@@ -110,6 +130,10 @@ client.on('interactionCreate', (interaction) =>
         case 'goals':
           await handleGoalsCommand(interaction);
           break;
+
+        case 'symbols':
+          await handleEmojiCommand(interaction);
+          break;
       }
     } else {
       if (
@@ -122,6 +146,13 @@ client.on('interactionCreate', (interaction) =>
           await handleGoalInteraction(interaction);
         } else if (customId.startsWith('bookclub-')) {
           await handleBookClubPicksInteraction(interaction);
+        }
+      } else if (interaction.isAutocomplete()) {
+        if (
+          interaction.commandName === 'lgt' &&
+          interaction.options.getSubcommandGroup() === 'symbols'
+        ) {
+          await handleEmojiAutocomplete(interaction);
         }
       }
     }

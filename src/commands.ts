@@ -4,6 +4,7 @@ import { getKudosCommands } from './kudos';
 import { getBookClubPicksCommands } from './book-club-picks';
 import { getTwitchCommands } from './twitch';
 import { getGoalsCommands } from './goals';
+import { getEmojiCommands } from './emoji';
 
 const lgtCommand = new SlashCommandBuilder()
   .setName('lgt')
@@ -27,7 +28,8 @@ const commands = [
       return group;
     })
     .addSubcommandGroup(getTwitchCommands())
-    .addSubcommandGroup(getGoalsCommands()),
+    .addSubcommandGroup(getGoalsCommands())
+    .addSubcommandGroup(getEmojiCommands()),
 ];
 
 export async function registerCommands() {
