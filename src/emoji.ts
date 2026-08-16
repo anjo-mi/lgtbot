@@ -25,6 +25,14 @@ export function getEmojiCommands() {
               .setDescription('The ID of the server to import symbols from')
               .setRequired(true)
           )
+          .addStringOption((opt) =>
+            opt
+              .setName('emoji-name')
+              .setDescription(
+                'Name of a specific symbol to import (imports all if omitted)'
+              )
+              .setRequired(false)
+          )
       )
       .addSubcommand((sub) =>
         sub
@@ -114,6 +122,41 @@ async function handleCloneFrom(interaction: ChatInputCommandInteraction) {
     } else {
       toClone.push(emoji);
     }
+  }
+
+  const targetName = interaction.options.getString('emoji-name');
+  if (targetName) {
+    const match = sourceEmojis.find(
+      (e) => e.name?.toLowerCase() === targetName.toLowerCase()
+    );
+    if (!match) {
+      await interaction.editReply({
+        embeds: [
+          new EmbedBuilder()
+            .setColor(Colors.DarkRed)
+            .setTitle('Symbol not found')
+            .setDescription(
+              `**${targetName}** doesn't exist in **${sourceGuild.name}**.`
+            )
+            .setTimestamp(),
+        ],
+      });
+      return;
+    }
+    if (duplicates.includes(match.name!)) {
+      await interaction.editReply({
+        embeds: [
+          new EmbedBuilder()
+            .setColor(Colors.DarkGold)
+            .setTitle('Already exists')
+            .setDescription(`**${match.name}** already exists in this server.`)
+            .setTimestamp(),
+        ],
+      });
+      return;
+    }
+    toClone.splice(0, toClone.length, match);
+    duplicates.length = 0;
   }
 
   if (toClone.length === 0) {
